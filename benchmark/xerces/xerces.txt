@@ -1,0 +1,15 @@
+C:/xml/300MB.xml: 3079 ms (8294578 elems, 1224661 attrs, 0 spaces, 159438026 chars)
+
+real	0m3.104s
+user	0m0.000s
+sys	0m0.000s
+C:/xml/2GB.xml: 10559 ms (12109972 elems, 1068581 attrs, 0 spaces, 2016686471 chars)
+
+real	0m10.591s
+user	0m0.000s
+sys	0m0.000s
+C:/xml/7GB.xml: 36537 ms (43016307 elems, 3939241 attrs, 0 spaces, 2211496244 chars)
+
+real	0m36.560s
+user	0m0.000s
+sys	0m0.000s

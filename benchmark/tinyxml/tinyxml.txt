@@ -1,0 +1,14 @@
+
+real	0m10.856s
+user	0m0.000s
+sys	0m0.000s
+Could not load test file 'C:/xml/2GB.xml'. Error='Error document empty.'. Exiting.
+
+real	0m0.027s
+user	0m0.000s
+sys	0m0.000s
+Could not load test file 'C:/xml/7GB.xml'. Error='Error document empty.'. Exiting.
+
+real	0m0.011s
+user	0m0.000s
+sys	0m0.000s

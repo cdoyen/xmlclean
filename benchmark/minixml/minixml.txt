@@ -1,0 +1,18 @@
+mxml: Unable to add value node of type MXML_TEXT to parent <id>!
+Unable to read XML file with default callback.
+
+real	0m15.623s
+user	0m0.000s
+sys	0m0.000s
+mxml: Unable to add value node of type MXML_TEXT to parent <text>!
+Unable to read XML file with default callback.
+
+real	0m14.770s
+user	0m0.000s
+sys	0m0.000s
+mxml: Unable to add value node of type MXML_TEXT to parent <text>!
+Unable to read XML file with default callback.
+
+real	0m15.378s
+user	0m0.000s
+sys	0m0.000s

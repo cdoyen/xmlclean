@@ -1,0 +1,15 @@
+1 loops, with buffer size 65536. Average time per loop: 1.99
+
+real	0m2.043s
+user	0m0.000s
+sys	0m0.000s
+1 loops, with buffer size 65536. Average time per loop: 7.92
+
+real	0m7.950s
+user	0m0.000s
+sys	0m0.000s
+1 loops, with buffer size 65536. Average time per loop: 26.62
+
+real	0m26.655s
+user	0m0.000s
+sys	0m0.000s

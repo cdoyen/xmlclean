@@ -1,0 +1,21 @@
+java version "1.8.0_102"
+Java(TM) SE Runtime Environment (build 1.8.0_102-b14)
+Java HotSpot(TM) 64-Bit Server VM (build 25.102-b14, mixed mode)
+java -XX:+AggressiveOpts SAXParserTest 300MB.xml
+8294578
+
+real	0m1.944s
+user	0m0.000s
+sys	0m0.000s
+java -XX:+AggressiveOpts SAXParserTest 2GB.xml
+12109972
+
+real	0m9.722s
+user	0m0.000s
+sys	0m0.000s
+java -XX:+AggressiveOpts SAXParserTest 7GB.xml
+43016307
+
+real	0m32.308s
+user	0m0.000s
+sys	0m0.000s

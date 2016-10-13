@@ -1,0 +1,16 @@
+
+ebenemax: 3
+tag: 192160
+frametag: 48041
+selfclose: 0
+comment: 1
+prolog: 1
+all-tags: 240202
+attributes: 84070
+content_min: 2
+content_max: 35
+tag_min: 5
+tag_max: 47
+ibytes: 10148559
+obytes: 0
+ratio: 0.00%

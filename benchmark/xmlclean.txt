@@ -1,0 +1,60 @@
+
+ebenemax: 5
+tag: 5853110
+frametag: 1501308
+selfclose: 940160
+comment: 0
+prolog: 0
+all-tags: 8294578
+attributes: 1224661
+content_min: 1
+content_max: 326
+tag_min: 2
+tag_max: 250
+ibytes: 305977221
+obytes: 0
+ratio: 0.00%
+
+real	0m0.658s
+user	0m0.000s
+sys	0m0.000s
+
+ebenemax: 5
+tag: 9269536
+frametag: 2196378
+selfclose: 644058
+comment: 0
+prolog: 0
+all-tags: 12109972
+attributes: 1068581
+content_min: 1
+content_max: 1819576
+tag_min: 2
+tag_max: 250
+ibytes: 2315524559
+obytes: 0
+ratio: 0.00%
+
+real	0m1.684s
+user	0m0.000s
+sys	0m0.000s
+
+ebenemax: 5
+tag: 33314002
+frametag: 8070171
+selfclose: 1632134
+comment: 0
+prolog: 0
+all-tags: 43016307
+attributes: 3939241
+content_min: 1
+content_max: 2003157
+tag_min: 2
+tag_max: 263
+ibytes: 3245305954
+obytes: 0
+ratio: 0.00%
+
+real	0m5.931s
+user	0m0.000s
+sys	0m0.000s

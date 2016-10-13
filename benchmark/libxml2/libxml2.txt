@@ -1,0 +1,20 @@
+C:\projekte\libxml2\xmllint.exe: using libxml version 20708
+   compiled with: Threads Tree Output Push Reader Patterns Writer SAXv1 FTP HTTP DTDValid HTML Legacy C14N Catalog XPath XPointer XInclude Iconv Unicode Regexps Automata Expr Schemas Schematron Modules Debug Zlib 
+./xmllint -huge -sax -stream -timing /c/xml/300MB.xml
+Parsing took 3229 ms
+
+real	0m3.256s
+user	0m0.000s
+sys	0m0.000s
+./xmllint -huge -sax -stream -timing /c/xml/2GB.xml
+Parsing took 13225 ms
+
+real	0m13.234s
+user	0m0.000s
+sys	0m0.000s
+./xmllint -huge -sax -stream -timing /c/xml/7GB.xml
+Parsing took 44170 ms
+
+real	0m44.182s
+user	0m0.000s
+sys	0m0.000s
