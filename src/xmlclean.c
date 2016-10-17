@@ -60,7 +60,7 @@ static const unsigned char *memchrignore(const unsigned char *y, size_t w)
 	return 0;
 }
 
-static void countAttributes(const unsigned char* b, size_t z, unsigned long *c)
+static void countAttributes(const unsigned char* b, size_t z, size_t *c)
 {
 	int in = 0, in1 = 0;
 	size_t i;
@@ -139,8 +139,8 @@ static int nextpair(const unsigned char **value, size_t *valuelen, const unsigne
 		}
 	}
 	*valuelen = (size_t)(s - (mm->b + start));
-	mm->g -= ((s - mm->b) + 1) - mm->i;
-	mm->i = (s - mm->b) + 1;
+	mm->g -= ((size_t)(s - mm->b) + 1) - mm->i;
+	mm->i = (size_t)(s - mm->b) + 1;
 
 	{
 		size_t i = 0;
@@ -170,8 +170,8 @@ static int nextpair(const unsigned char **value, size_t *valuelen, const unsigne
 
 		}
 	}
-	mm->g -= ((s - mm->b) + 1) - mm->i;
-	mm->i = (s - mm->b) + 1;
+	mm->g -= ((size_t)(s - mm->b) + 1) - mm->i;
+	mm->i = (size_t)(s - mm->b) + 1;
 
 	*value = mm->b + start;
 	*taglen = (size_t)(s - (mm->b + start + *valuelen) - 1);
@@ -180,7 +180,36 @@ static int nextpair(const unsigned char **value, size_t *valuelen, const unsigne
 	return XML_OK;
 }
 
-int worker_nop(int typ, const unsigned char *tag, size_t taglen, int outcb(), void* outcbdata, Parser *p)
+static int nextpair_insitu(const unsigned char **value, size_t *valuelen, const unsigned char **tag, size_t *taglen, Insitu *mm)
+{
+	const unsigned char *s;
+
+	if (mm->i >= mm->e || !(s = memchr(mm->b + mm->i, '<', mm->e - mm->i)))
+	{
+		*value = mm->b + mm->i;
+		*valuelen = mm->e - mm->i;
+		*taglen = 0;
+		*tag = (unsigned char*)"";
+		return ERREND;
+	}
+	*value = mm->b + mm->i;
+	*valuelen = (size_t)(s - *value);
+	mm->i += *valuelen + 1;
+
+	if (mm->i >= mm->e || !(s = (mm->b[mm->i] == '!' ? memchrignore(mm->b + mm->i, mm->e - mm->i) : memchr(mm->b + mm->i, '>', mm->e - mm->i))))
+	{
+		*taglen = mm->e - mm->i;
+		*tag = mm->b + mm->i;
+		return ERREND;
+	}
+	*tag = mm->b + mm->i;
+	*taglen = (size_t)(s - *tag);
+	mm->i += *taglen + 1;
+
+	return XML_OK;
+}
+
+int worker_nop(int typ, const unsigned char *tag, size_t taglen, const Parser *p)
 {
 	switch (typ)
 	{
@@ -404,23 +433,29 @@ int parse(Parser *p)
 	return XML_OK;
 }
 
-int parse_light(Parser *p)
-{	/* dasselbe wie bei parse nur ohne Statistik und ohne Path */
+int parse_insitu(Parser *p)
+{
 	/* setting defaults */
-	size_t(*inputcb)() = p->inputcb ? p->inputcb : readblock;
+#if 0
 	size_t(*outputcb)() = p->outputcb ? p->outputcb : writeblock;
-	void   *inputcbdata = p->inputcbdata ? p->inputcbdata : stdin;
 	void  *outputcbdata = p->outputcbdata ? p->outputcbdata : stdout;
 	int(*worker)() = p->worker ? p->worker : worker_clean;
-
-	const unsigned char *content = 0, *tag = 0;
-	size_t contentlen = 0, taglen = 0;
+#endif
+	const unsigned char *content, *tag;
+	size_t contentlen, taglen;
 	int myebene = p->ebene, r, neu = 1;
 
-	p->mm.buf = p->buflen ? p->buflen : 65536U;
 
-	while ((r = nextpair(&content, &contentlen, &tag, &taglen, &p->mm, inputcb, inputcbdata)) == XML_OK)
+	while ((r = nextpair_insitu(&content, &contentlen, &tag, &taglen, &p->insitu)) == XML_OK)
 	{
+		{ /* nur Statistik */
+			(!p->stat.tag_min) || p->stat.tag_min > taglen ? p->stat.tag_min = taglen : 0;
+			(!p->stat.content_min) || p->stat.content_min > contentlen ? p->stat.content_min = contentlen : 0;
+			p->stat.tag_max < taglen ? p->stat.tag_max = taglen : 0;
+			p->stat.content_max < contentlen ? p->stat.content_max = contentlen : 0;
+			p->stat.ibytes += (unsigned long)(2 + taglen + contentlen);
+		}
+
 		p->content = content;
 		p->contentlen = contentlen;
 		if (*tag == '/')
@@ -429,7 +464,7 @@ int parse_light(Parser *p)
 			/* FRAMECLOSE_:  zw. Schließtag und zugehörigem Öffnentag liegen noch andere Tags (Frametag) */
 			p->ebene--;
 
-			if ((r = worker(neu ? NORMALCLOSE_ : FRAMECLOSE_, tag, taglen, outputcb, outputcbdata, p)) != XML_OK) return r;
+			if ((r = p->worker(neu ? NORMALCLOSE_ : (p->stat.tag--, p->stat.frametag++, FRAMECLOSE_), tag, taglen, p->outputcb, p->outputcbdata, p)) != XML_OK) return r;
 
 			return XML_OK; /* und natürlich wieder eine Ebene zurück */
 		}
@@ -437,26 +472,34 @@ int parse_light(Parser *p)
 			if (*tag == '!')
 			{
 				/* Kommentar */
-				if ((r = worker(COMMENT_, tag, taglen, outputcb, outputcbdata, p)) != XML_OK) return r;
+				p->stat.comment++;
+				if ((r = p->worker(COMMENT_, tag, taglen, p->outputcb, p->outputcbdata, p)) != XML_OK) return r;
 			}
 			else
 				if (*tag == '?')
 				{
 					/* Prolog */
-					if ((r = worker(PROLOG_, tag, taglen, outputcb, outputcbdata, p)) != XML_OK) return r;
+					p->stat.prolog++;
+					if ((r = p->worker(PROLOG_, tag, taglen, p->outputcb, p->outputcbdata, p)) != XML_OK) return r;
 				}
 				else
 					if (tag[taglen - 1] == '/')
 					{
 						/* self closing tag */
-						if ((r = worker(SELFCLOSE_, tag, taglen, outputcb, outputcbdata, p)) != XML_OK) return r;
+						p->stat.selfclose++;
+						countAttributes(tag, taglen, &p->stat.attributes);
+						if ((r = p->worker(SELFCLOSE_, tag, taglen, p->outputcb, p->outputcbdata, p)) != XML_OK) return r;
 					}
 					else
 					{
 						/* Abstieg - Rekursion */
-						if ((r = worker(OPENTAG_, tag, taglen, outputcb, outputcbdata, p)) != XML_OK) return r;
+						if ((r = p->worker(OPENTAG_, tag, taglen, p->outputcb, p->outputcbdata, p)) != XML_OK) return r;
+						if ((r = addPath(tag, taglen, p->ebene, &p->path)) != XML_OK) return r;
+						countAttributes(tag, taglen, &p->stat.attributes);
 						p->ebene++;
-						if ((r = parse(p)) != XML_OK)
+						p->stat.ebenemax < p->ebene ? p->stat.ebenemax = p->ebene : 0;
+						p->stat.tag++;
+						if ((r = parse_insitu(p)) != XML_OK)
 							return r;
 					}
 
@@ -468,7 +511,134 @@ int parse_light(Parser *p)
 
 	if (contentlen | taglen)
 	{
-		if ((r = worker(UNKNOWN_, tag, taglen, outputcb, outputcbdata, p)) != XML_OK) return r;
+		if ((r = p->worker(UNKNOWN_, tag, taglen, p->outputcb, p->outputcbdata, p)) != XML_OK)
+			return r;
+	}
+	p->stat.ibytes += (unsigned long)(contentlen + (taglen ? taglen + 1 : 0));
+
+	return XML_OK;
+}
+
+int parse_light_insitu(Parser *p)
+{
+	const unsigned char *content, *tag;
+	size_t contentlen, taglen;
+	int myebene = p->ebene, r, neu = 1;
+
+	while ((r = nextpair_insitu(&content, &contentlen, &tag, &taglen, &p->insitu)) == XML_OK)
+	{
+		p->content = content;
+		p->contentlen = contentlen;
+		if (*tag == '/')
+		{
+			/* NORMALCLOSE_:  Schließtag direkt nach Öffnen-Tag (Normaltag) */
+			/* FRAMECLOSE_:  zw. Schließtag und zugehörigem Öffnentag liegen noch andere Tags (Frametag) */
+			p->ebene--;
+
+			if ((r = p->worker(neu ? NORMALCLOSE_ : FRAMECLOSE_, tag, taglen, p)) != XML_OK) return r;
+
+			return XML_OK; /* und natürlich wieder eine Ebene zurück */
+		}
+		else
+			if (*tag == '!')
+			{
+				/* Kommentar */
+				if ((r = p->worker(COMMENT_, tag, taglen, p)) != XML_OK) return r;
+			}
+			else
+				if (*tag == '?')
+				{
+					/* Prolog */
+					if ((r = p->worker(PROLOG_, tag, taglen, p)) != XML_OK) return r;
+				}
+				else
+					if (tag[taglen - 1] == '/')
+					{
+						/* self closing tag */
+						if ((r = p->worker(SELFCLOSE_, tag, taglen, p)) != XML_OK) return r;
+					}
+					else
+					{
+						/* Abstieg - Rekursion */
+						if ((r = p->worker(OPENTAG_, tag, taglen, p)) != XML_OK) return r;
+						/*if ((r = addPath(tag, taglen, p->ebene, &p->path)) != XML_OK) return r;*/
+						p->ebene++;
+						if ((r = parse_light_insitu(p)) != XML_OK)
+							return r;
+					}
+
+		neu = 0;
+	}
+
+	if (myebene != p->ebene)
+		return ERRHIERAR;
+
+	if (contentlen | taglen)
+	{
+		if ((r = p->worker(UNKNOWN_, tag, taglen, p)) != XML_OK)
+			return r;
+	}
+
+	return XML_OK;
+}
+
+int parse_light(Parser *p)
+{	/* dasselbe wie bei parse nur ohne Statistik und ohne Path */
+
+	const unsigned char *content, *tag;
+	size_t contentlen, taglen;
+	int myebene = p->ebene, r, neu = 1;
+
+	while ((r = nextpair(&content, &contentlen, &tag, &taglen, &p->mm, p->inputcb, p->inputcbdata)) == XML_OK)
+	{
+		p->content = content;
+		p->contentlen = contentlen;
+		if (*tag == '/')
+		{
+			/* NORMALCLOSE_:  Schließtag direkt nach Öffnen-Tag (Normaltag) */
+			/* FRAMECLOSE_:  zw. Schließtag und zugehörigem Öffnentag liegen noch andere Tags (Frametag) */
+			p->ebene--;
+
+			if ((r = p->worker(neu ? NORMALCLOSE_ : FRAMECLOSE_, tag, taglen, p)) != XML_OK) return r;
+
+			return XML_OK; /* und natürlich wieder eine Ebene zurück */
+		}
+		else
+			if (*tag == '!')
+			{
+				/* Kommentar */
+				if ((r = p->worker(COMMENT_, tag, taglen, p)) != XML_OK) return r;
+			}
+			else
+				if (*tag == '?')
+				{
+					/* Prolog */
+					if ((r = p->worker(PROLOG_, tag, taglen, p)) != XML_OK) return r;
+				}
+				else
+					if (tag[taglen - 1] == '/')
+					{
+						/* self closing tag */
+						if ((r = p->worker(SELFCLOSE_, tag, taglen, p)) != XML_OK) return r;
+					}
+					else
+					{
+						/* Abstieg - Rekursion */
+						if ((r = p->worker(OPENTAG_, tag, taglen, p)) != XML_OK) return r;
+						p->ebene++;
+						if ((r = parse_light(p)) != XML_OK)
+							return r;
+					}
+
+		neu = 0;
+	}
+
+	if (myebene != p->ebene)
+		return ERRHIERAR;
+
+	if (contentlen | taglen)
+	{
+		if ((r = p->worker(UNKNOWN_, tag, taglen, p)) != XML_OK) return r;
 	}
 
 	return XML_OK;
@@ -480,4 +650,26 @@ void done(Parser *p)
 	free(p->path.List);
 	free(p->mm.b);
 	memset(p, 0, sizeof*p);
+}
+
+void init_light(Parser *p,
+	void* inputcbdata,
+	void* outputcbdata,
+	int(*worker)(),
+	size_t(*inputcb)(),
+	size_t(*outputcb)(),
+	void* userdata,
+	size_t buflen,
+	const unsigned char *b,
+	size_t e)
+{
+	p->inputcbdata = inputcbdata ? inputcbdata : stdin;
+	p->outputcbdata = outputcbdata ? outputcbdata : stdout;
+	p->worker = worker ? worker : worker_clean;
+	p->inputcb = inputcb ? inputcb : readblock;
+	p->outputcb = outputcb ? outputcb : writeblock;
+	p->userdata = userdata ? userdata : 0;
+	p->mm.buf = buflen ? buflen : 65536U;
+	p->insitu.b = b ? b : 0;
+	p->insitu.e = e ? e : 0;
 }

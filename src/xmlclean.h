@@ -26,7 +26,14 @@ typedef struct
 
 typedef struct
 {
-	unsigned long
+	const unsigned char *b;
+	size_t e;
+	size_t i;
+} Insitu;
+
+typedef struct
+{
+	size_t
 		ebenemax,
 		tag,
 		frametag,
@@ -60,6 +67,7 @@ typedef struct
 	size_t(*outputcb)();
 	void* userdata;
 	size_t buflen;
+	Insitu insitu;
 	/******************************************************/
 
 		/* internal */
@@ -77,7 +85,10 @@ enum { SELFCLOSE_, COMMENT_, PROLOG_, NORMALCLOSE_, FRAMECLOSE_, OPENTAG_, UNKNO
 
 /* Hauptroutine, siehe Parser */
 int parse(Parser *);
+int parse_insitu(Parser *);
+int parse_light_insitu(Parser *);
 int parse_light(Parser *);
+void init_light(Parser*, void*, void*, int(*)(), size_t(*)(), size_t(*)(), void*, size_t, const unsigned char*, size_t);
 
 /* Reset Parser (free) */
 void done(Parser *);
@@ -85,6 +96,6 @@ void done(Parser *);
 /* predefined worker-callbacks */
 int worker_clean(int typ, const unsigned char *tag, size_t taglen, int(), void*, Parser*);
 int worker_csv(int typ, const unsigned char *tag, size_t taglen, int(), void*, Parser*);
-int worker_nop(int typ, const unsigned char *tag, size_t taglen, int(), void*, Parser*);
+int worker_nop(int typ, const unsigned char *tag, size_t taglen, const Parser*);
 int worker_pretty(int typ, const unsigned char *tag, size_t taglen, int(), void*, Parser*);
 

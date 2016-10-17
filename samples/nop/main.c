@@ -7,12 +7,11 @@ int main(int argc, char**argv)
 	if (!f) return perror(argv[1]), 1;
 	{
 		Parser p = { 0 };
-		p.inputcbdata = f;
-		p.worker = worker_nop;
+		init_light(&p, f, 0, worker_nop, 0, 0, 0, 0, 0, 0);
 
 		setvbuf(f, 0, _IOFBF, 32768);
 		{
-			int r = parse(&p);
+			int r = parse_light(&p);
 			if (r)
 			{
 				if (r == ERRMEM)
@@ -41,6 +40,7 @@ int main(int argc, char**argv)
 				(unsigned long)p.stat.obytes,
 				p.stat.ibytes ? p.stat.obytes*100. / p.stat.ibytes : 0);
 			fclose(f);
+
 			done(&p);
 			return r;
 		}
