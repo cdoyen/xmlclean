@@ -66,7 +66,6 @@ typedef struct
 	size_t(*inputcb)();
 	size_t(*outputcb)();
 	void* userdata;
-	size_t buflen;
 	Insitu insitu;
 	/******************************************************/
 

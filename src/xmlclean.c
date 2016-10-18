@@ -358,7 +358,7 @@ int parse(Parser *p)
 	size_t contentlen = 0, taglen = 0;
 	int myebene = p->ebene, r, neu = 1;
 
-	p->mm.buf = p->buflen ? p->buflen : 65536U;
+	p->mm.buf = p->mm.buf ? p->mm.buf : 65536U;
 
 	while ((r = nextpair(&content, &contentlen, &tag, &taglen, &p->mm, inputcb, inputcbdata)) == XML_OK)
 	{
@@ -435,16 +435,9 @@ int parse(Parser *p)
 
 int parse_insitu(Parser *p)
 {
-	/* setting defaults */
-#if 0
-	size_t(*outputcb)() = p->outputcb ? p->outputcb : writeblock;
-	void  *outputcbdata = p->outputcbdata ? p->outputcbdata : stdout;
-	int(*worker)() = p->worker ? p->worker : worker_clean;
-#endif
 	const unsigned char *content, *tag;
 	size_t contentlen, taglen;
 	int myebene = p->ebene, r, neu = 1;
-
 
 	while ((r = nextpair_insitu(&content, &contentlen, &tag, &taglen, &p->insitu)) == XML_OK)
 	{
