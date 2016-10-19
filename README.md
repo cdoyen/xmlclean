@@ -4,11 +4,14 @@
 
 * strikt konform gemäß ANSI C/C89
 * reentrant/multithreadfähig
-* SAX basiert (kein DOM/XPath)
+* SAX basiert (kein DOM)
 * keine Interpretierung von Daten-Inhalten
 * keine Prüfung auf XML-Konformität
 * keine XSD-Validierung
 * keine Encoding-Behandlung
+#### Benefit zu anderen SAX-Parsern
+* Typinfo des Tags (Normal-,Frame-,self closing,Kommentar...) bei jedem Callback
+* Path der Frametag-Hierarchie bei jedem Callback
 
 ## Intention
 
