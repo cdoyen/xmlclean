@@ -12,7 +12,7 @@
 
 #### Benefit zu anderen SAX-Parsern
 * Typinfo des Tags (Normal-,Frame-,self closing,Kommentar...) bei jedem Callback
-* Path der Frametag-Hierarchie bei jedem Callback
+* XPATH support bei jedem SAX-Callback
 
 ## Intention
 
