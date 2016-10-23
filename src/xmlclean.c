@@ -392,9 +392,10 @@ int parse(Parser *p)
 					{
 						/* Abstieg - Rekursion */
 						size_t oldpathlen = p->path.z;
-						if ((r = worker(OPENTAG_, tag, taglen, outputcb, outputcbdata, p)) != XML_OK) return r;
+						memcpy(p->path.tag, tag, taglen); p->path.taglen = taglen;
 						p->ebene++;
 						addPath(tag, taglen, &p->path);
+						if ((r = worker(OPENTAG_, tag, taglen, outputcb, outputcbdata, p)) != XML_OK) return r;
 
 						/* Statistik */
 						p->stat.ebenemax < p->ebene ? p->stat.ebenemax = p->ebene : 0;
@@ -473,7 +474,7 @@ int parse_insitu(Parser *p)
 					if (tag[taglen - 1] == '/')
 					{
 						/* self closing tag */
-						size_t oldpathlen = p->path.z;
+						size_t oldpathlen = p->path.z;						
 						addPath(tag, taglen, &p->path);
 						p->stat.selfclose++;
 						if ((r = worker(SELFCLOSE_, tag, taglen, outputcb, outputcbdata, p)) != XML_OK) return r;
@@ -483,9 +484,10 @@ int parse_insitu(Parser *p)
 					{
 						/* Abstieg - Rekursion */
 						size_t oldpathlen = p->path.z;
-						if ((r = worker(OPENTAG_, tag, taglen, outputcb, outputcbdata, p)) != XML_OK) return r;
+						p->path.tagptr = tag; p->path.taglen = taglen;
 						p->ebene++;
 						addPath(tag, taglen, &p->path);
+						if ((r = worker(OPENTAG_, tag, taglen, outputcb, outputcbdata, p)) != XML_OK) return r;
 
 						/* Statistik */
 						p->stat.ebenemax < p->ebene ? p->stat.ebenemax = p->ebene : 0;
@@ -662,27 +664,6 @@ void init_light(Parser *p,
 	p->mm.buf = buflen ? buflen : 65536U;
 	p->insitu.b = b ? b : 0;
 	p->insitu.e = e ? e : 0;
-}
-
-const unsigned char *getfulltag(const Path *path, size_t *z)
-{
-	if (path->taglen)
-	{
-		*z = path->taglen;
-		return path->tag;
-	}
-	{
-		size_t i = path->z;
-		while (i--)
-		{
-			if (path->path[i] == '/')
-			{
-				*z = path->z - i - 1;
-				return &path->path[i + 1];
-			}
-		}
-	}
-	return 0;
 }
 
 static int memmatchi(const unsigned char *wildp, size_t wildz, const unsigned char *stringp, size_t stringz)
