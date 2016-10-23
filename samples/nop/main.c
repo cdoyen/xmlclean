@@ -1,17 +1,15 @@
 #include "xmlclean.h"
 #include <stdio.h> /* fopen,fclose,fprintf,stderr */
 
+
 int main(int argc, char**argv)
 {
 	FILE *f = fopen(argv[1], "rb");
 	if (!f) return perror(argv[1]), 1;
 	{
-		Parser p = { 0 };
-		init_light(&p, f, 0, worker_nop, 0, 0, 0, 0, 0, 0);
-
-		setvbuf(f, 0, _IOFBF, 32768);
+		Parser p = { f, 0, worker_nop };
 		{
-			int r = parse_light(&p);
+			int r = parse(&p);
 			if (r)
 			{
 				if (r == ERRMEM)
@@ -23,7 +21,7 @@ int main(int argc, char**argv)
 						fprintf(stderr, "Fehler Output");
 			}
 
-			fprintf(stderr, "\nebenemax: %lu\ntag: %lu\nframetag: %lu\nselfclose: %lu\ncomment: %lu\nprolog: %lu\nall-tags: %lu\nattributes: %lu\ncontent_min: %lu\ncontent_max: %lu\ntag_min: %lu\ntag_max: %lu\nibytes: %lu\nobytes: %lu\nratio: %.2f%%\n",
+			fprintf(stderr, "\nebenemax: %lu\ntag: %lu\nframetag: %lu\nselfclose: %lu\ncomment: %lu\nprolog: %lu\nall-tags: %lu\ncontent_min: %lu\ncontent_max: %lu\ntag_min: %lu\ntag_max: %lu\nibytes: %lu\nobytes: %lu\nratio: %.2f%%\n",
 				(unsigned long)p.stat.ebenemax,
 				(unsigned long)p.stat.tag,
 				(unsigned long)p.stat.frametag,
@@ -31,7 +29,6 @@ int main(int argc, char**argv)
 				(unsigned long)p.stat.comment,
 				(unsigned long)p.stat.prolog,
 				(unsigned long)(p.stat.comment + p.stat.selfclose + p.stat.frametag + p.stat.tag),
-				(unsigned long)p.stat.attributes,
 				(unsigned long)p.stat.content_min,
 				(unsigned long)p.stat.content_max,
 				(unsigned long)p.stat.tag_min,

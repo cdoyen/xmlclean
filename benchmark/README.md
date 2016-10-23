@@ -2,7 +2,8 @@
 
   Dauer/Sek           | 300MB |  2 GB |  7 GB
 ----------------------|-------|-------|-------   
-  xmlclean 1.0        |  0,65 |  1,7  |  5,9
+  xmlclean 1.0 light  |  0,39 |  1,1  |  3,7
+  xmlclean 1.0        |  0,76 |  1,6  |  5,6
   expat 2.2.0         |  2,0  |  8,0  | 26,7
   xerces/Java 1.8.102 |  1,9  |  9,7  | 32,7
   xerces/C++ 3.1.4    |  3,1  | 10,6  | 36,6
@@ -14,7 +15,7 @@
 Die Testdaten stammen aus Wikipedia  
 [https://dumps.wikimedia.org/enwiki/latest/](https://dumps.wikimedia.org/enwiki/latest/)
   
-Testhardware:  i5 / 4,2GHz / 16 GB / SSD / Win10-64
+Testhardware:  i5 / 4,2GHz / 48 GB / SSD / Win10-64
   
 Der Hauptspeicherbedarf von **xmlclean** ist gering selbst bei großen XML-Dokumenten.  
 Für eine **2 GB** große XML-Datei wird durch das Parsen nur etwa **5 MB** RAM benötigt

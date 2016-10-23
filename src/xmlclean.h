@@ -20,16 +20,22 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 typedef struct
 {
+	size_t z;
 	unsigned char *b;
-	size_t i, g, e, buf;
-} MMan;   /* Memory-Manager für Lesepuffer */
+} Memblock; /* for match with void *userdata */
 
 typedef struct
 {
-	const unsigned char *b;
-	size_t e;
-	size_t i;
-} Insitu;
+	unsigned char *b;
+	size_t i, g, e, buf;
+} MemMan;   /* Memory-Manager für Lesepuffer */
+
+typedef struct
+{
+	const unsigned char *b; /* points to begin of Memoryblock */
+	size_t e;               /* Byte-Size of Memoryblock */
+	size_t i;  /* internal! */
+} Insitu; /* Memoryblock of full loaded XML document */
 
 typedef struct
 {
@@ -40,7 +46,6 @@ typedef struct
 		selfclose,
 		comment,
 		prolog,
-		attributes,
 		content_min,
 		content_max,
 		tag_min,
@@ -50,12 +55,11 @@ typedef struct
 } Statistik;
 
 typedef struct {
-	size_t bz;
-	struct {
-		unsigned char *b;
-		size_t z;
-	} *List;
-} Path; /* Opentag-Ebenen */
+	size_t z;
+	unsigned char path[32768];
+	size_t taglen;
+	unsigned char tag[1024];
+} Path;
 
 typedef struct
 {
@@ -64,14 +68,14 @@ typedef struct
 	void* outputcbdata;
 	int(*worker)();
 	size_t(*inputcb)();
-	size_t(*outputcb)();
+	int(*outputcb)();
 	void* userdata;
 	Insitu insitu;
 	/******************************************************/
 
 		/* internal */
-	MMan mm;
-	unsigned long ebene;
+	MemMan mm;
+	size_t ebene;
 	const unsigned char *content;
 	size_t contentlen;
 	int newline;
@@ -83,11 +87,11 @@ enum { XML_OK, ERRMEM, ERROUTPUT, ERRHIERAR, ERREND };
 enum { SELFCLOSE_, COMMENT_, PROLOG_, NORMALCLOSE_, FRAMECLOSE_, OPENTAG_, UNKNOWN_ };
 
 /* Hauptroutine, siehe Parser */
-int parse(Parser *);
-int parse_insitu(Parser *);
-int parse_light_insitu(Parser *);
-int parse_light(Parser *);
-void init_light(Parser*, void*, void*, int(*)(), size_t(*)(), size_t(*)(), void*, size_t, const unsigned char*, size_t);
+int parse(Parser*);
+int parse_insitu(Parser*);
+int parse_light_insitu(Parser*);
+int parse_light(Parser*);
+void init_light(Parser*, void*, void*, int(*)(), size_t(*)(), int(*)(), void*, size_t, const unsigned char*, size_t);
 
 /* Reset Parser (free) */
 void done(Parser *);
@@ -95,6 +99,12 @@ void done(Parser *);
 /* predefined worker-callbacks */
 int worker_clean(int typ, const unsigned char *tag, size_t taglen, int(), void*, Parser*);
 int worker_csv(int typ, const unsigned char *tag, size_t taglen, int(), void*, Parser*);
-int worker_nop(int typ, const unsigned char *tag, size_t taglen, const Parser*);
+int worker_nop(int typ, const unsigned char *tag, size_t taglen, int(), void*, Parser*);
 int worker_pretty(int typ, const unsigned char *tag, size_t taglen, int(), void*, Parser*);
+int worker_xpath(int typ, const unsigned char *tag, size_t taglen, int out(), void* f, Parser *p);
+int worker_xpath_match(int typ, const unsigned char *tag, size_t taglen, int out(), void* f, Parser *p);
+
+const unsigned char *getfulltag(const Path *path, size_t *z);
+int anymatch(const unsigned char *w, size_t z, const unsigned char *s, size_t b);
+int writeln(void *f, const unsigned char*s, size_t w);
 
