@@ -6,7 +6,6 @@ selfclose: 0
 comment: 1
 prolog: 1
 all-tags: 240202
-attributes: 84070
 content_min: 2
 content_max: 35
 tag_min: 5
