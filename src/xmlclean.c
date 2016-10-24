@@ -392,19 +392,22 @@ int parse(Parser *p)
 					{
 						/* Abstieg - Rekursion */
 						size_t oldpathlen = p->path.z;
-						memcpy(p->path.tag, tag, taglen); p->path.taglen = taglen;
-						p->ebene++;
 						addPath(tag, taglen, &p->path);
+
+						memcpy(p->path.tag, tag, taglen); p->path.taglen = taglen;
+
 						if ((r = worker(OPENTAG_, tag, taglen, outputcb, outputcbdata, p)) != XML_OK) return r;
 
 						/* Statistik */
 						p->stat.ebenemax < p->ebene ? p->stat.ebenemax = p->ebene : 0;
 						p->stat.tag++;
 
+						p->ebene++;
 						if ((r = parse(p)) != XML_OK)
 							return r;
-						p->path.z = oldpathlen;
 						p->ebene--;
+
+						p->path.z = oldpathlen;
 					}
 
 		neu = 0;
@@ -474,7 +477,7 @@ int parse_insitu(Parser *p)
 					if (tag[taglen - 1] == '/')
 					{
 						/* self closing tag */
-						size_t oldpathlen = p->path.z;						
+						size_t oldpathlen = p->path.z;
 						addPath(tag, taglen, &p->path);
 						p->stat.selfclose++;
 						if ((r = worker(SELFCLOSE_, tag, taglen, outputcb, outputcbdata, p)) != XML_OK) return r;
@@ -484,19 +487,22 @@ int parse_insitu(Parser *p)
 					{
 						/* Abstieg - Rekursion */
 						size_t oldpathlen = p->path.z;
-						p->path.tagptr = tag; p->path.taglen = taglen;
-						p->ebene++;
 						addPath(tag, taglen, &p->path);
+
+						p->path.tagptr = tag; p->path.taglen = taglen;
+
 						if ((r = worker(OPENTAG_, tag, taglen, outputcb, outputcbdata, p)) != XML_OK) return r;
 
 						/* Statistik */
 						p->stat.ebenemax < p->ebene ? p->stat.ebenemax = p->ebene : 0;
 						p->stat.tag++;
 
+						p->ebene++;
 						if ((r = parse_insitu(p)) != XML_OK)
 							return r;
-						p->path.z = oldpathlen;
 						p->ebene--;
+
+						p->path.z = oldpathlen;
 					}
 
 		neu = 0;
@@ -555,8 +561,8 @@ int parse_light_insitu(Parser *p)
 					{
 						/* Abstieg - Rekursion */
 						if ((r = p->worker(OPENTAG_, tag, taglen, p->outputcb, p->outputcbdata, p)) != XML_OK) return r;
-						p->ebene++;
 
+						p->ebene++;
 						if ((r = parse_light_insitu(p)) != XML_OK)
 							return r;
 						p->ebene--;
@@ -617,8 +623,8 @@ int parse_light(Parser *p)
 					{
 						/* Abstieg - Rekursion */
 						if ((r = p->worker(OPENTAG_, tag, taglen, p->outputcb, p->outputcbdata, p)) != XML_OK) return r;
-						p->ebene++;
 
+						p->ebene++;
 						if ((r = parse_light(p)) != XML_OK)
 							return r;
 						p->ebene--;
@@ -789,4 +795,21 @@ int worker_xpath_match(int typ, const unsigned char *tag, size_t taglen, int out
 		break;
 	}
 	return XML_OK;
+}
+
+int getattribut(const unsigned char *s, size_t z, const unsigned char **c, size_t w)
+{
+	int i = 0;
+	for (; i < (int)z - 3 - (int)w; ++i)
+	{
+		if (s[i + w + 1] == '=' && s[i + w + 2] == '\"' && memchr(" \n\r\t\v\f", s[i], 6) != 0 && !memcmp(s + i + 1, *c, w))
+		{
+			int x = 0;
+			size_t r = i + w + 3;
+			while (r < z && s[r++] != '\"') { ++x; }
+			*c = s + i + w + 3;
+			return x;
+		}
+	}
+	return -1;
 }

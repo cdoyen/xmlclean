@@ -1,7 +1,6 @@
 #include "xmlclean.h"
 #include <stdio.h> /* fopen,fclose,fprintf,stderr */
 
-
 int main(int argc, char**argv)
 {
 	FILE *f = fopen(argv[1], "rb");

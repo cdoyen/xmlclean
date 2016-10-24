@@ -59,7 +59,7 @@ typedef struct {
 	unsigned char path[8192];
 	size_t taglen;
 	unsigned char tag[1024];
-	unsigned char *tagptr;
+	const unsigned char *tagptr;
 } Path;
 
 typedef struct
@@ -105,6 +105,7 @@ int worker_pretty(int typ, const unsigned char *tag, size_t taglen, int(), void*
 int worker_xpath(int typ, const unsigned char *tag, size_t taglen, int out(), void* f, Parser *p);
 int worker_xpath_match(int typ, const unsigned char *tag, size_t taglen, int out(), void* f, Parser *p);
 
+int getattribut(const unsigned char *s, size_t z, const unsigned char **c, size_t w);
 int anymatch(const unsigned char *w, size_t z, const unsigned char *s, size_t b);
 int writeln(void *f, const unsigned char*s, size_t w);
 
