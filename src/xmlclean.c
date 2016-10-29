@@ -797,19 +797,19 @@ int worker_xpath_match(int typ, const unsigned char *tag, size_t taglen, int out
 	return XML_OK;
 }
 
-int getattribut(const unsigned char *s, size_t z, const unsigned char **c, size_t w)
+Memblock getattribut(const unsigned char *s, size_t z, Memblock m)
 {
 	int i = 0;
-	for (; i < (int)z - 3 - (int)w; ++i)
+	for (; i < (int)z - 3 - (int)m.z ; ++i)
 	{
-		if (s[i + w + 1] == '=' && s[i + w + 2] == '\"' && memchr(" \n\r\t\v\f", s[i], 6) != 0 && !memcmp(s + i + 1, *c, w))
+		if (s[i + m.z + 1] == '=' && s[i + m.z + 2] == '\"' && memchr(" \n\r\t\v\f", s[i], 6) != 0 && !memcmp(s + i + 1, m.b, m.z))
 		{
-			int x = 0;
-			size_t r = i + w + 3;
-			while (r < z && s[r++] != '\"') { ++x; }
-			*c = s + i + w + 3;
-			return x;
+			size_t r = i + m.z + 3;
+			m.b = s + r;
+			m.z = 0;
+			while (r < z && s[r++] != '\"') { ++m.z; }
+			return m;
 		}
 	}
-	return -1;
+	return m.b=0,m;
 }

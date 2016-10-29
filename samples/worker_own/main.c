@@ -6,21 +6,13 @@ int worker_own(int typ, const unsigned char *tag, size_t taglen, int out(), void
 	switch (typ)
 	{
 	case NORMALCLOSE_:
-	{
-		const unsigned char *s = "id";
-		int w = getattribut(p->path.tag, p->path.taglen, &s, 2);
-		if (w != -1)
-			out(f, s, w);
 		break;
-	}
 	case OPENTAG_:
-		break;
 	case SELFCLOSE_:
 	{
-		const unsigned char *s = "id";
-		int w = getattribut(tag, taglen, &s, 2);
-		if (w != -1)
-			out(f, s, w);
+		Memblock m = getattribut(tag, taglen, (Memblock) { 2, "id" });
+		if (m.b)
+			out(f, m.b, m.z);
 		break;
 	}
 	case FRAMECLOSE_:

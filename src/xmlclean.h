@@ -21,7 +21,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 typedef struct
 {
 	size_t z;
-	unsigned char *b;
+	const unsigned char *b;
 } Memblock; /* for match with void *userdata */
 
 typedef struct
@@ -105,7 +105,7 @@ int worker_pretty(int typ, const unsigned char *tag, size_t taglen, int(), void*
 int worker_xpath(int typ, const unsigned char *tag, size_t taglen, int out(), void* f, Parser *p);
 int worker_xpath_match(int typ, const unsigned char *tag, size_t taglen, int out(), void* f, Parser *p);
 
-int getattribut(const unsigned char *s, size_t z, const unsigned char **c, size_t w);
+Memblock getattribut(const unsigned char *s, size_t z, Memblock);
 int anymatch(const unsigned char *w, size_t z, const unsigned char *s, size_t b);
 int writeln(void *f, const unsigned char*s, size_t w);
 
