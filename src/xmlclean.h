@@ -110,7 +110,7 @@ int worker_xpath_match(int typ, const unsigned char *tag, size_t taglen, int out
 int writeln(void *f, const unsigned char*s, size_t w);
 
 Memblock getattribut(const unsigned char *s, size_t z, Memblock);
-int anymatch(const unsigned char *w, size_t z, const unsigned char *s, size_t b);
+int anymatch(const unsigned char *pattern, size_t z, const unsigned char *s, size_t b);
 size_t wordlen(const unsigned char*s, size_t z);
 size_t nslen(const unsigned char*s, size_t z);
 

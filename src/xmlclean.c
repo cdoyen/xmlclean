@@ -64,9 +64,11 @@ static const unsigned char *memchrignore(const unsigned char *y, size_t w)
 	return 0;
 }
 
-static void addPath(const unsigned char *tag, size_t taglen, Path *path)
+static void addPath(const unsigned char *tag, size_t taglen_, Path *path)
 {  /* XPATH aktualisieren inkl. Namespace ignorieren */
-	const unsigned char *s = tag;
+	size_t ns = nslen(tag, taglen_);
+	size_t taglen = taglen_ - ns;
+	const unsigned char *s = tag + ns;
 	size_t i = 0;
 	while (taglen && !memchr(" \n\r\t\v\f", *s, 6))
 	{
@@ -80,7 +82,7 @@ static void addPath(const unsigned char *tag, size_t taglen, Path *path)
 		--taglen;
 	}
 	path->path[path->z++] = '/';
-	memcpy(&path->path[path->z], tag, i);
+	memcpy(&path->path[path->z], tag + ns, i);
 	path->z += i;
 }
 
@@ -715,8 +717,25 @@ static int memmatchi(const unsigned char *wildp, size_t wildz, const unsigned ch
 	return wild == wildz;
 }
 
-int anymatch(const unsigned char *w, size_t z, const unsigned char *s, size_t b)
+static int anymatch_(const unsigned char *w, size_t z, const unsigned char *s, size_t b)
 {
+	size_t a = 0, i = 0;
+	for (; i < z; ++i)
+	{
+		if (w[i] == '|')
+		{
+			if (memmatchi(&w[a], i - a, s, b))
+				return 1;
+			a = i + 1;
+		}
+	}
+	return i > a && memmatchi(&w[a], i - a, s, b);
+}
+
+int anymatch(const unsigned char *w, size_t z, const unsigned char *s_, size_t b_)
+{
+	const unsigned char*s = s_ + nslen(s_, b_);
+	size_t b = wordlen(s, b_ - nslen(s_, b_));
 	size_t a = 0, i = 0;
 	for (; i < z; ++i)
 	{
@@ -827,7 +846,7 @@ size_t nslen(const unsigned char*s, size_t z)
 	size_t r = 0;
 	for (; r < z; ++r)
 	{
-		if (s[r] == ':') break;
+		if (s[r] == ':') return r + 1;
 	}
-	return r;
+	return 0;
 }
