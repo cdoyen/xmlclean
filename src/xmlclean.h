@@ -107,8 +107,11 @@ int worker_nop(int typ, const unsigned char *tag, size_t taglen, int(), void*, P
 int worker_pretty(int typ, const unsigned char *tag, size_t taglen, int(), void*, Parser*);
 int worker_xpath(int typ, const unsigned char *tag, size_t taglen, int out(), void* f, Parser *p);
 int worker_xpath_match(int typ, const unsigned char *tag, size_t taglen, int out(), void* f, Parser *p);
+int writeln(void *f, const unsigned char*s, size_t w);
 
 Memblock getattribut(const unsigned char *s, size_t z, Memblock);
 int anymatch(const unsigned char *w, size_t z, const unsigned char *s, size_t b);
-int writeln(void *f, const unsigned char*s, size_t w);
+size_t wordlen(const unsigned char*s, size_t z);
+size_t nslen(const unsigned char*s, size_t z);
+
 
