@@ -717,21 +717,6 @@ static int memmatchi(const unsigned char *wildp, size_t wildz, const unsigned ch
 	return wild == wildz;
 }
 
-static int anymatch_(const unsigned char *w, size_t z, const unsigned char *s, size_t b)
-{
-	size_t a = 0, i = 0;
-	for (; i < z; ++i)
-	{
-		if (w[i] == '|')
-		{
-			if (memmatchi(&w[a], i - a, s, b))
-				return 1;
-			a = i + 1;
-		}
-	}
-	return i > a && memmatchi(&w[a], i - a, s, b);
-}
-
 int anymatch(const unsigned char *w, size_t z, const unsigned char *s_, size_t b_)
 {
 	const unsigned char*s = s_ + nslen(s_, b_);
