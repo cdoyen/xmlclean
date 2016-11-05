@@ -17,8 +17,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 ******************************************************************************/
 
-#define _FILE_OFFSET_BITS  64  /* gcc,clang,mingw support for Files > 4GB on 32Bit also */
-
 #include "xmlclean.h"
 
 #include <stdio.h>  /* fread,fwrite,fpos_t,stdin,stdout */
@@ -286,7 +284,7 @@ int worker_pretty(int typ, const unsigned char *tag, size_t taglen, int outcb(),
 		break;
 	case OPENTAG_:
 	{
-		int i = p->ebene;
+		size_t i = p->ebene;
 		if (!p->newline&&i)
 		{
 			if (!outcb(outcbdata, "\n", 1)) return ERROUTPUT;
@@ -307,7 +305,7 @@ int worker_pretty(int typ, const unsigned char *tag, size_t taglen, int outcb(),
 	case COMMENT_:
 	case PROLOG_:
 	{
-		int i = p->ebene;
+		size_t i = p->ebene;
 		if (!p->newline&&i)
 		{
 			if (!outcb(outcbdata, "\n", 1)) return ERROUTPUT;
@@ -800,7 +798,7 @@ int worker_xpath_match(int typ, const unsigned char *tag, size_t taglen, int out
 Memblock getattribut(const unsigned char *s, size_t z, Memblock m)
 {
 	int i = 0;
-	for (; i < (int)z - 3 - (int)m.z ; ++i)
+	for (; i < (int)z - 3 - (int)m.z; ++i)
 	{
 		if (s[i + m.z + 1] == '=' && s[i + m.z + 2] == '\"' && memchr(" \n\r\t\v\f", s[i], 6) != 0 && !memcmp(s + i + 1, m.b, m.z))
 		{
@@ -811,5 +809,25 @@ Memblock getattribut(const unsigned char *s, size_t z, Memblock m)
 			return m;
 		}
 	}
-	return m.b=0,m;
+	return m.b = 0, m;
+}
+
+size_t wordlen(const unsigned char*s, size_t z)
+{
+	size_t r = 0;
+	for (; r < z; ++r)
+	{
+		if (memchr(" \n\r\t\v\f", s[r], 6)) break;
+	}
+	return r;
+}
+
+size_t nslen(const unsigned char*s, size_t z)
+{
+	size_t r = 0;
+	for (; r < z; ++r)
+	{
+		if (s[r] == ':') break;
+	}
+	return r;
 }

@@ -1,6 +1,6 @@
 #include "xmlclean.h"
 #include <stdio.h> /* fopen,fclose,fprintf,stderr */
-
+#if 0
 int worker_own(int typ, const unsigned char *tag, size_t taglen, int out(), void* f, Parser *p)
 {
 	switch (typ)
@@ -26,13 +26,36 @@ int worker_own(int typ, const unsigned char *tag, size_t taglen, int out(), void
 	}
 	return XML_OK;
 }
-
+#else
+int worker_own(int typ, const unsigned char *tag, size_t taglen, int out(), void* f, Parser *p)
+{
+	switch (typ)
+	{
+	case NORMALCLOSE_:
+		break;
+	case OPENTAG_:
+		break;
+	case SELFCLOSE_:
+		break;
+	case FRAMECLOSE_:
+		break;
+	case COMMENT_:
+		break;
+	case PROLOG_:
+		break;
+	case UNKNOWN_:
+		break;
+	}
+	printf("%d: \"%.*s\" + \"%.*s\"\n", typ, p->contentlen, p->content, taglen, tag);
+	return XML_OK;
+}
+#endif
 int main(int argc, char**argv)
 {
 	FILE *f = fopen(argv[1], "rb");
 	if (!f) return perror(argv[1]), 1;
 	{
-		Parser p = { f, 0, worker_own, 0, writeln };
+		Parser p = { f, 0, worker_own };
 		{
 			int r = parse(&p);
 			if (r)
