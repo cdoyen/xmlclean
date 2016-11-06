@@ -35,7 +35,8 @@ int main(int argc, char**argv)
 	FILE *f = fopen(argv[1], "rb");
 	if (!f) return perror(argv[1]), 1;
 	{
-		Parser p = { f, 0, worker_search, 0, writeln, &(Memblock) { 20, "name|*capital*|*tude" } };
+		Parser p = { 0 };
+		init_light(&p, f, 0, worker_search, 0, writeln, &(Memblock) { 20, "name|*capital*|*tude" }, 0, 0, 0);
 		{
 			int r = parse(&p);
 			if (r)
