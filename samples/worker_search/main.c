@@ -38,7 +38,7 @@ int main(int argc, char**argv)
 		Parser p = { 0 };
 		init_light(&p, f, 0, worker_search, 0, writeln, &(Memblock) { 20, "name|*capital*|*tude" }, 0, 0, 0);
 		{
-			int r = parse(&p);
+			int r = parse_light(&p);
 			if (r)
 			{
 				if (r == ERRMEM)
