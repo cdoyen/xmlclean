@@ -5,7 +5,7 @@ Das Beispiel zeigt, wie die Suche nach Tags in der Callback-Funktion abläuft, i
 
 Zu beachten ist hierbei:  
 * *anymatch* vergleicht immer ignore-case
-* *anymatch* akzeotiert die üblichen Stringmatching-Zeichen '\*' und '?'
+* *anymatch* akzeptiert die üblichen Stringmatching-Zeichen '\*' und '?'
 * an *anymatch* dürfen *keine* Großbuchstaben übergeben werden
 
 Beispielaufruf:
