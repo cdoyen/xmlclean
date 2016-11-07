@@ -12,7 +12,7 @@
 
 #### Benefit zu anderen SAX-Parsern
 * Typinfo des Tags (Normal-,Frame-,self closing,Kommentar...) ist bei jedem Callback verfügbar
-* XPATH Zugriff ist bei jedem SAX-Callback möglich
+* XPATH Zugriff ist bei jedem Callback möglich
 
 ## Intention
 
