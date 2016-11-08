@@ -4,7 +4,7 @@
 
 * strikt konform gemäß ANSI C/C89
 * reentrant/multithreadfähig
-* SAX basiert (kein DOM)
+* SAX basiert, aber auch in situ möglich
 * keine Interpretierung von Daten-Inhalten
 * keine Prüfung auf XML-Konformität
 * keine XSD-Validierung
@@ -12,7 +12,7 @@
 
 #### Benefit zu anderen SAX-Parsern
 * Typinfo des Tags (Normal-,Frame-,self closing,Kommentar...) ist bei jedem Callback verfügbar
-* XPATH Zugriff ist bei jedem SAX-Callback möglich
+* XPATH Zugriff ist bei jedem Callback möglich
 
 ## Intention
 
