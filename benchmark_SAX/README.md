@@ -15,7 +15,7 @@
 Die Testdaten stammen aus Wikipedia  
 [https://dumps.wikimedia.org/enwiki/latest/](https://dumps.wikimedia.org/enwiki/latest/)
   
-Testhardware:  i5 / 4,2GHz / 48 GB / SSD / Win10-64
+Testhardware:  i5 / 4,2GHz / 32 GB / SSD / Win10-64
   
 Der Hauptspeicherbedarf von **xmlclean** ist gering selbst bei großen XML-Dokumenten.  
 Für eine **2 GB** große XML-Datei wird durch das Parsen nur etwa **5 MB** RAM benötigt
