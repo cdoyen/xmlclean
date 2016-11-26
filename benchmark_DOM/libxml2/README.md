@@ -3,6 +3,7 @@ Libxml2 ist eine äußerst schlecht implementierte Bibliothek.
 Von Zitat:  
 `is known to be very portable, the library should build and work without serious troubles on a variety of systems`  
 kann **keine Rede** sein.  
+
 Der Code ist vollständig durchsetzt von Plattform- und Compilerabhängigkeiten.  
 Code wie  
 ```C
