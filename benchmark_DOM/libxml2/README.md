@@ -1,4 +1,6 @@
-Libxml2 ist eine äußerst schlecht implementierte Bibliothek. Von Zitat:  
+Libxml2 ist eine äußerst schlecht implementierte Bibliothek.  
+
+Von Zitat:  
 `is known to be very portable, the library should build and work without serious troubles on a variety of systems`  
 kann **keine Rede** sein.  
 Der Code ist vollständig durchsetzt von Plattform- und Compilerabhängigkeiten.  
@@ -18,6 +20,7 @@ ret->psvi = (void *) (long) ctxt->input->line;
 ```
 trägt ganz sicher nicht zu korrekten Ergebnissen und schon gar nicht zu portablem Code bei.  
 Folgerichtig crasht Libxml2 auch bei Daten, die nicht im Fokus des Autors standen (> 2GB), siehe `crash.jpg`.  
+
 Auch die Performanz lässt sehr zu wünschen übrig, trotz idealisierter Testumgebungen (in Memory + SAX) liegt Libxml2 abgeschlagen am Ende.  
 Der Code unübersichtlich und viel zu umfangreich, insbesondere die exorbitant vielen Compilierungsschalter machen den Code für einen ernsthaften Einsatz unbrauchbar.  
 
