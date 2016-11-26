@@ -1,6 +1,6 @@
 Libxml2 ist eine äußerst schlecht implementierte Bibliothek. Von Zitat:  
-`...Libxml2 is known to be very portable, the library should build and work without serious troubles on a variety of systems...`  
-kann keine Rede sein.  
+`is known to be very portable, the library should build and work without serious troubles on a variety of systems`  
+kann **keine Rede** sein.  
 Der Code ist vollständig durchsetzt von Plattform- und Compilerabhängigkeiten.  
 Code wie  
 ```C
@@ -20,5 +20,6 @@ trägt ganz sicher nicht zu korrekten Ergebnissen und schon gar nicht zu portabl
 Folgerichtig crasht Libxml2 auch bei Daten, die nicht im Fokus des Autors standen (> 2GB), siehe `crash.jpg`.  
 Auch die Performanz lässt sehr zu wünschen übrig, trotz idealisierter Testumgebungen (in Memory + SAX) liegt Libxml2 abgeschlagen am Ende.  
 Der Code unübersichtlich und viel zu umfangreich, insbesondere die exorbitant vielen Compilierungsschalter machen den Code für einen ernsthaften Einsatz unbrauchbar.  
-Die Quelldateien liegen ungeordnet - Test + Bibliothekscode - zusammen in einem Verzeichnis, die Unmenge an Compilierungsschalter sind *nicht* unabhängig voneinander benutzbar.
+
+Die Quelldateien liegen ungeordnet - Test + Bibliothekscode zusammen in einem Verzeichnis - vor, die Unmenge an Compilierungsschalter sind **nicht** unabhängig voneinander benutzbar.
 
