@@ -23,7 +23,7 @@ trägt ganz sicher nicht zu korrekten Ergebnissen und schon gar nicht zu portabl
 Folgerichtig crasht Libxml2 auch bei Daten, die nicht im Fokus des Autors standen (> 2GB), siehe `crash.jpg`.  
 
 Auch die Performanz lässt sehr zu wünschen übrig, trotz idealisierter Testumgebungen (in Memory + SAX) liegt Libxml2 abgeschlagen am Ende.  
-Der Code unübersichtlich und viel zu umfangreich, insbesondere die exorbitant vielen Compilierungsschalter machen den Code für einen ernsthaften Einsatz unbrauchbar.  
+Der Code ist unübersichtlich und viel zu umfangreich, insbesondere die exorbitant vielen Compilierungsschalter machen den Code für einen ernsthaften Einsatz unbrauchbar.  
 
 Die Quelldateien liegen ungeordnet - Test + Bibliothekscode zusammen in einem Verzeichnis - vor, die Unmenge an Compilierungsschalter sind **nicht** unabhängig voneinander benutzbar.  
 
