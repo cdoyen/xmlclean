@@ -8,6 +8,8 @@ Die Performanz ist sehr schlecht, zusätzlich zum o.g. eingeschränkten Einsatzb
 * es liegt eine Proxy-Lib vor gegen die man (statisch) linken muss, die selbst aber wiederum auf DLL verweist - das ist irreführend und sinnfrei
 * d.h. es liegt für jedes XDK-Compilat immer eine Abhängigkeit auf mind. 5 DLL vor
 * zusätzlich müssen alle Oracle-NLS Files vorliegen, was kleine schlanke Anwendungen unmöglich macht
-* trotz der umfangreichen NLS-Files kann man leicht inhaltslose Fehlermeldungen erhalten
+* trotz der umfangreichen NLS-Files kann man leicht inhaltslose Fehlermeldungen erhalten  
 `Message 9 not found; No message file for product=XDK, facility=LPX
 LPX-00200: Message 200 not found; No message file for product=XDK, facility=LPX`
+
+#### Schulnote 5
