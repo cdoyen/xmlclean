@@ -1,4 +1,4 @@
-Oracle XDK for C ist keine OpenSource-Software.  
+Oracle XDK (**X**ML **D**evelopment **K**it) for C ist keine OpenSource-Software.  
 Als Teil der Oracle-DB wird es lediglich als lib/a/dll/so mit Headerdateien geliefert.  
 Für Windows existiert diese XDK nur als MSVC und 32Bit Variante.  
 Für MinGW oder 64Bit ist demzufolge unter Windows kein Einsatz möglich.  
