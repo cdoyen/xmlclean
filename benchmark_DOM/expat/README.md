@@ -15,4 +15,7 @@ Der C-Standard wird ignoriert; statt den Standard konsequent anzuwenden werden l
 /* Handle the case where memmove() doesn't exist. */
 #ifndef HAVE_MEMMOVE
 ```
-während an anderen Stellen `memcpy` verwendet wird: `memmove` und `memcpy` sind beide schon seit C89 Bestandteil des Standards.
+während an anderen Stellen `memcpy` verwendet wird: `memmove` und `memcpy` sind beide schon seit C89 Bestandteil des Standards.  
+Die Aufzählungen an sinnfreien und falschen Codestellen ließe sich ohne Probleme weit fortführen:  
+#### Schulnote 4#####
+
