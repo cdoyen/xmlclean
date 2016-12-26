@@ -9,7 +9,7 @@ Code wie
                             (XML_Char *)s,
                             (int)((XML_Char *)next - (XML_Char *)s));
 ```
-ist sinnfrei (expliziter Pointercast verhindert Compilerwarnungen, Pointersubtraktion mit sinnfreiem (int) Cast statt korrekter Verwendung von `ptrdiff_t`.  
+ist sinnfrei (expliziter Pointercast verhindert Compilerwarnungen, Pointersubtraktion mit sinnfreiem (int) Cast statt korrekter Verwendung von `ptrdiff_t`).  
 Der C-Standard wird ignoriert; statt den Standard konsequent anzuwenden werden laienhaft Annahmen getroffen:  
 ```C
 /* Handle the case where memmove() doesn't exist. */
