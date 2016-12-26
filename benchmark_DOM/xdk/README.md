@@ -9,7 +9,7 @@ XML Developer’s Kit Guide* angepriesenen **High performance XML Parser** kann 
 
 Zusätzlich zum o.g. eingeschränkten Einsatzbereich ist auch das Sourcecode-Handling schlecht konzipiert:  
 * es liegt eine Proxy-Lib vor gegen die man (statisch) linken muss, die selbst aber wiederum auf DLL verweist - das ist irreführend und sinnfrei (es muss oraxml10.lib UND oraxml10.dll vorhanden sein)
-* d.h. es liegt für jedes XDK-Compilat immer eine Abhängigkeit auf mind. 5 DLL vor
+* d.h. es liegt für jedes XDK-Compilat immer eine Abhängigkeit von mind. 5 DLL vor
 * zusätzlich müssen alle Oracle-NLS Files vorliegen, was kleine schlanke Anwendungen unmöglich macht
 * trotz der umfangreichen NLS-Files kann man leicht inhaltslose Fehlermeldungen erhalten  
 `Message 9 not found; No message file for product=XDK, facility=LPX
