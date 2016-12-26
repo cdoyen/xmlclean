@@ -3,4 +3,4 @@ Es werden unnötige Abhängigkeiten geschaffen, COM ist zuwingend erforderlich. 
 Trotz großzügiger Gestaltung des Messprogramms (COM-Initialisierung/Deinitialisierung geht nicht in die Messung ein) liegt MSXML am Ende des Feldes.  
 
 Berücksichtigt man nun noch, dass trotz Verwendung von MS-COM, MS-XML, MS-VisualStudio und MS-Windows große XML-Dateien zu Abstürzen ohne jegliche Fehlermeldungen führen:  
-Schulnote 5
+####Schulnote 5####
